@@ -48,7 +48,7 @@ pd.set_option('display.width', 1000)
 
 
 # loading drug use dataset 
-drug_use = pd.read_csv('drug-use-by-age.csv')
+drug_use = pd.read_csv('data/drug-use-by-age.csv')
 
 # '-' spotted, replaced with 0 as linked to use value which equals zero in this instance
 drug_use.replace('-','0',inplace=True)
@@ -136,7 +136,7 @@ layout_us_bar=dict(
 # In[6]:
 
 
-dr_drug_use = pd.read_csv('death-rates-from-drug-use-disorders.csv')
+dr_drug_use = pd.read_csv('data/death-rates-from-drug-use-disorders.csv')
 
 dr_drug_use.columns = ['country','code','year','rate']
 
@@ -229,7 +229,7 @@ import os
 
 #read them into pandas
 
-df_list = [pd.read_csv(file) for file in os.listdir('/Users/milou/Documents/Drug Use') 
+df_list = [pd.read_csv(file) for file in os.listdir('/Users/milou/Desktop/global-drug-epidemic/data') 
            if file.startswith('death-rate')] 
 
 #concatenate them together
@@ -253,7 +253,7 @@ visible.update(invisible)
 
 
 # mental health df
-mental_health = pd.read_csv('mental-health-as-risk-for-drug-dependency.csv')
+mental_health = pd.read_csv('data/mental-health-as-risk-for-drug-dependency.csv')
 
 
 # In[13]:
@@ -747,6 +747,6 @@ def update_drug_use(selected_age):
 
     return {'data':trace_bar,'layout':layout_us_bar}, title, subtitle
     
-
 if __name__ == "__main__":
     app.run_server(debug=True)
+
