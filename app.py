@@ -747,5 +747,6 @@ def update_drug_use(selected_age):
 
     return {'data':trace_bar,'layout':layout_us_bar}, title, subtitle
     
-app.run_server(debug=True,mode='external')
 
+if __name__ == "__main__":
+    app.run_server(debug=True)
