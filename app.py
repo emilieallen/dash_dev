@@ -1,12 +1,8 @@
 import numpy as np
-import scipy.stats as stats
 import csv
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.io as pio
 pio.templates.default = "seaborn"
-sns.set(font_scale=1.5)
 # Standard plotly imports
 from chart_studio.plotly import plot, iplot
 import plotly.graph_objs as go
@@ -14,7 +10,6 @@ from plotly.offline import iplot, init_notebook_mode
 # Using plotly + cufflinks in offline mode
 import cufflinks
 cufflinks.go_offline(connected=True)
-init_notebook_mode(connected=True)
 import dash
 import dash_core_components as dcc
 import dash_daq as daq
