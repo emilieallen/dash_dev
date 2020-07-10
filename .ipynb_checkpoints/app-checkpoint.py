@@ -15,7 +15,7 @@ from plotly.offline import iplot, init_notebook_mode
 import cufflinks
 cufflinks.go_offline(connected=True)
 init_notebook_mode(connected=True)
-import dash
+import dash as Dash
 import dash_core_components as dcc
 import dash_daq as daq
 import dash_html_components as html
@@ -204,11 +204,8 @@ import os
 
 #read them into pandas
 
-Path = '/Users/milou/Desktop/global-drug-epidemic/data/'
-filelist = [files for files in os.listdir(Path) if files.startswith('death-rate')]
-f = [Path + f for f in filelist]
-
-df_list = [pd.read_csv(i) for i in f]
+df_list = [pd.read_csv(file) for file in os.listdir('/Users/milou/Desktop/global-drug-epidemic/data')
+           if file.startswith('death-rate')]
 
 #concatenate them together
 big_df = pd.concat(df_list,sort=False,ignore_index=False, axis=1).T.drop_duplicates().T
