@@ -191,28 +191,10 @@ layout=dict(
             IHME, Global Burden of Disease </a>',
         showarrow = False)])
 
-
-# In[10]:
-
-
-import os
-
 #read them into pandas
 
-Path = '/Users/milou/Desktop/global-drug-epidemic/data/'
-filelist = [files for files in os.listdir(Path) if files.startswith('death-rate')]
-f = [Path + f for f in filelist]
 
-df_list = [pd.read_csv(i) for i in f]
-
-#concatenate them together
-big_df = pd.concat(df_list,sort=False,ignore_index=False, axis=1).T.drop_duplicates().T
-
-big_df.columns = ['country','code','year','amphetamine_rate','cocaine_rate','opioid_rate','all_rate']
-
-
-# In[11]:
-
+big_df = pd.read_csv('global_df.csv')
 
 # slider marks design
 
