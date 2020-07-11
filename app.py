@@ -194,7 +194,7 @@ layout=dict(
 #read them into pandas
 
 
-big_df = pd.read_csv('global_df.csv')
+big_df = pd.read_csv('data/global_df.csv')
 
 # slider marks design
 
