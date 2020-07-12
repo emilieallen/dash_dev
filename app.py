@@ -587,18 +587,18 @@ BODY = dbc.Container(
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 
-app = dash.Dash(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP])
-
+#app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server  # for Heroku deployment
 
 app.layout = html.Div(children=[NAVBAR,BODY])
 
 @app.callback(
-    Output('death-rates-graph', 'figure'),
-    [Input('drug_type-dropdown', 'value'),
-     Input('death-rates-year-slider', 'value'),
-     Input('region-dropdown', 'value'),
-     Input('region-dropdown', 'options'),])
+    dash.dependencies.Output('death-rates-graph', 'figure'),
+    [dash.dependencies.Input('drug_type-dropdown', 'value'),
+     dash.dependencies.Input('death-rates-year-slider', 'value'),
+     dash.dependencies.Input('region-dropdown', 'value'),
+     dash.dependencies.Input('region-dropdown', 'options'),])
 def update_death_rates_figure(selected_drug, selected_year, selected_scope, options):
     title = {'all_rate': 'drug use disorders',
              'cocaine_rate': 'cocaine overdoses',
@@ -641,10 +641,10 @@ def update_death_rates_figure(selected_drug, selected_year, selected_scope, opti
     return {'data': trace, 'layout': layout}
 
 @app.callback(
-    [Output('prevalence-graph', 'figure'),
-    Output('prevalence-title','children')],
-    [Input('prevalence-region', 'value'),
-     Input('prevalence-year-slider', 'value')])
+    [dash.dependencies.Output('prevalence-graph', 'figure'),
+    dash.dependencies.Output('prevalence-title','children')],
+    [dash.dependencies.Input('prevalence-region', 'value'),
+     dash.dependencies.Input('prevalence-year-slider', 'value')])
 def update_prevalence_figure(selected_region, selected_year):
     disorder_age_sex_female = disorder_age_sex[(disorder_age_sex.sex == 'Female')
                                                & (disorder_age_sex.year == selected_year)
@@ -673,10 +673,10 @@ def update_prevalence_figure(selected_region, selected_year):
     return {'data': trace, 'layout': layout_prev}, title
 
 @app.callback(
-    [Output('drug_use', 'figure'),
-     Output('drug-use-title','children'),
-     Output('drug-use-subtitle','children')],
-    [Input('age-slider', 'value')])
+    [dash.dependencies.Output('drug_use', 'figure'),
+     dash.dependencies.Output('drug-use-title','children'),
+     dash.dependencies.Output('drug-use-subtitle','children')],
+    [dash.dependencies.Input('age-slider', 'value')])
 def update_drug_use(selected_age):
     #bar chart
     age = [i for v,i in age_dict.items() if v==selected_age][0]
