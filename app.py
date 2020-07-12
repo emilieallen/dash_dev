@@ -33,26 +33,17 @@ drug_use.age.replace({'22-23':'22.5','24-25':'24.5','26-29':'27.5','30-34':'32',
 for col in drug_use.select_dtypes(include=['object']).columns:
     drug_use[col] = drug_use[col].astype('float')
 
-drug_use.set_index('age',inplace=True)
-
-drug_use.head()
+drug_use.set_index('age',inplace=True) 
 
 
-# In[3]:
-
-
-# Creating a DF with the use, setting 'age' as index and removing -use in column names
+## Creating a DF with the use, setting 'age' as index and removing -use in column names
 
 usage = drug_use[(drug_use.columns.values[drug_use.columns.str.contains('use')])]
 usage.columns = usage.columns.str.replace('-use','')
 
 usage_transformed = usage.apply(lambda x: x/100)
 
-
-# In[4]:
-
-
-# Creating a DF with the frequency, removing -frequency in column names
+## Creating a DF with the frequency, removing -frequency in column names
 
 frequency = drug_use[(drug_use.columns.values[drug_use.columns.str.contains('freq')])]
 
@@ -62,162 +53,84 @@ for col in frequency.columns:
     frequency[col] = frequency[col].astype('int')
 
 
-# In[5]:
-
-
-layout_us_bar=dict(
-        xaxis=dict(
-            showgrid=False,
-            showline=True,
-            showticklabels=True,
-            domain=[0, 1],
-            gridcolor='lightgray',
-            gridwidth=0.5,
-            linecolor='lightgray',
-            linewidth=2,
-            mirror=True,
-            nticks=4,
-            type='log',
-            range=[-3,0]
-        ),
-        yaxis=dict(
-            showline=True,
-            showticklabels=True,
-            linecolor='lightgray',
-            linewidth=2,
-            mirror=True,
-            ticks='outside'
-        ),
-        paper_bgcolor='#F5F6F9',
-        plot_bgcolor='#F5F6F9',
-        margin=dict(l=120, r=10, t=20, b=80),
-        font_color='rgb(13,48,100)',
-        annotations = [dict(
-            x=0,
-            y=-0.16,
-            xref='paper',
-            yref='paper',
-            text='Source: <a href="https://github.com/fivethirtyeight/data/tree/master/drug-use-by-age">\
+layout_us_bar={
+        "xaxis":{
+            "showgrid":False,
+            "showline":True,
+            "showticklabels":True,
+            "domain":[0, 1],
+            "gridcolor":'lightgray',
+            "gridwidth":0.5,
+            "linecolor":'lightgray',
+            "linewidth":2,
+            "mirror":True,
+            "nticks":4,
+            "type":'log',
+            "range":[-3,0]
+        },
+        "yaxis":{
+            "showline":True,
+            "showticklabels":True,
+            "linecolor":'lightgray',
+            "linewidth":2,
+            "mirror":True,
+            "ticks":'outside'
+        },
+        "paper_bgcolor":'#F5F6F9',
+        "plot_bgcolor":'#F5F6F9',
+        "margin":{'l':120, 'r':10, 't':20, 'b':80},
+        "font_color":'rgb(13,48,100)',
+        "annotations" : [{
+            'x':0,
+            'y':-0.16,
+            'xref':'paper',
+            'yref':'paper',
+            'text':'Source: <a href="https://github.com/fivethirtyeight/data/tree/master/drug-use-by-age">\
                 How Baby Boomers Get High </a>',
-            showarrow = False)]
-    )
+            'showarrow':False}]
+ }
 
+##read them into pandas
 
-# In[6]:
+big_df=pd.read_csv('data/global_df.csv')
 
+## slider marks design
 
-dr_drug_use = pd.read_csv('data/death-rates-from-drug-use-disorders.csv')
-
-dr_drug_use.columns = ['country','code','year','rate']
-
-
-# In[7]:
-
-
-## Data
-
-trace = []
-
-for yr in dr_drug_use.year.unique():
-    trace.append(
-        go.Choropleth(
-            visible=False,
-            locations = dr_drug_use.code[dr_drug_use.year == yr],
-            z = dr_drug_use.rate[dr_drug_use.year == yr],
-            zmin = 0,
-            zmid=1,
-            zmax = dr_drug_use.rate.max(),
-            text = dr_drug_use.country[dr_drug_use.year == yr],
-            name = str(yr),
-            hoverinfo="z+text",
-            colorscale = ["#f7fbff", "#c6dbef","#85bcdb", "#6baed6", "#57a0ce", "#4292c6", "#3082be", "#2171b5",
-                          "#1361a9","#08519c", "#0b4083", "#08306b"],
-            marker_line_color='darkgray',
-            marker_line_width=0.5
-        ))
-
-trace[0]['visible'] = True
-
-
-# In[8]:
-
-
-# Create and add slider
-steps = []
-for i in range(len(trace)):
-    step = dict(
-        method="update",
-        label=str(trace[i]['name']),
-        args=[{"visible": [False] * len(trace)},
-              {"title": "Death rates from drug use disorders in "+ str(trace[i]['name'])+"<br><sub>measured per 100,000 individuals</sub>" }])
-    step["args"][0]["visible"][i] = True  # Toggle i'th trace to "visible"
-    steps.append(step)
-
-
-sliders = [dict(
-    active=0,
-    currentvalue={"prefix": "Year: "},
-    pad={"t": 50},
-    steps=steps
-)]
-
-
-# In[9]:
-
-
-layout=dict(
-    title='<b>Death rates from drug use disorders in 1990</b> <br><sub>measured per 100,000 individuals</sub>',
-    paper_bgcolor='#F5F6F9',
-    plot_bgcolor='#F5F6F9',
-    font_color='#505050',
-    geo=dict(
-        showframe=False,
-        showcoastlines=True,
-        projection_type='equirectangular',
-        lataxis_range=[-60,90],
-        domain=dict(y=[0,1])),
-    yaxis_fixedrange=True,
-    xaxis_fixedrange=True,
-    dragmode=False,
-    autosize=True,
-    margin={'autoexpand':True},
-    height=600,
-    annotations = [dict(
-        x=0,
-        y=-0.1,
-        xref='paper',
-        yref='paper',
-        text='Source: <a href="http://ghdx.healthdata.org/gbd-results-tool">\
-            IHME, Global Burden of Disease </a>',
-        showarrow = False)])
-
-#read them into pandas
-
-
-big_df = pd.read_csv('data/global_df.csv')
-
-# slider marks design
-
-visible = {1990:'1990',2017:'2017'}
-invisible ={i:'' for i in big_df['year'].unique()[1:-1]}
+visible={1990:'1990',2017:'2017'}
+invisible={str(i):'' for i in big_df['year'].unique()[1:-1]}
 
 visible.update(invisible)
 
+layout={
+    'title':'<b>Death rates from drug use disorders in 1990</b> <br><sub>measured per 100,000 individuals</sub>',
+    'paper_bgcolor':'#F5F6F9',
+    'plot_bgcolor':'#F5F6F9',
+    'font_color':'#505050',
+    'geo':{
+        'showframe':False,
+        'showcoastlines':True,
+        'projection_type':'equirectangular',
+        'lataxis_range':[-60,90],
+        'domain':{'y':[0,1]}},
+    'yaxis_fixedrange':True,
+    'xaxis_fixedrange':True,
+    'dragmode':False,
+    'autosize':True,
+    'margin':{'autoexpand':True},
+    'height':600,
+    'annotations':[{
+        'x':0,
+        'y':-0.1,
+        'xref':'paper',
+        'yref':'paper',
+        'text':'Source: <a href="http://ghdx.healthdata.org/gbd-results-tool">\
+            IHME, Global Burden of Disease </a>',
+        'showarrow':False}]}
 
-# In[12]:
-
-
-# mental health df
+## mental health df
 mental_health = pd.read_csv('data/mental-health-as-risk-for-drug-dependency.csv')
 
-
-# In[13]:
-
-
-fig_mh = go.Figure()
-
-
-fig_mh.add_trace(go.Bar(
+trace_mh = [go.Bar(
                 y=mental_health['Entity'],
                 x=mental_health.iloc[:,3],
                 name='Odds ratio',
@@ -227,53 +140,51 @@ fig_mh.add_trace(go.Bar(
                                 line=dict(color='DarkBlue')
                                 ),
                 hovertemplate="%{x}"
-            )
-)
+            )]
 
-fig_mh.update_layout(
-    xaxis=dict(
-        showgrid=True,
-        showline=True,
-        showticklabels=True,
-        domain=[0, 1],
-        gridcolor='lightgray',
-        gridwidth=0.1,
-        linecolor='lightgray',
-        linewidth=2,
-        mirror=True,
-        title='Odds Ratio'
-    ),
-    yaxis=dict(
-        showline=True,
-        showgrid=False,
-        showticklabels=True,
-        linecolor='lightgray',
-        linewidth=2,
-        mirror=True,
-        ticks='outside',
-        type='category',
-        categoryorder='total ascending'
-    ),
-    paper_bgcolor='#F5F6F9',
-    plot_bgcolor='#F5F6F9',
-    font_color='#505050',
-    font_size=10,
-    autosize=True,
-    margin={'autoexpand':True,'t':20},
-    annotations = [dict(
-        x=-0.2,
-        y=-0.16,
-        xref='paper',
-        yref='paper',
-        text='Source: <a href="https://ourworldindata.org/mental-health-disorders-as-risk-for-substance-use">\
+layout_mh={
+	'xaxis':{
+        'showgrid':True,
+        'showline':True,
+        'showticklabels':True,
+        'domain':[0, 1],
+        'gridcolor':'lightgray',
+        'gridwidth':0.1,
+        'linecolor':'lightgray',
+        'linewidth':2,
+        'mirror':True,
+        'title':'Odds Ratio'
+    },
+    'yaxis':{
+        'showline':True,
+        'showgrid':False,
+        'showticklabels':True,
+        'linecolor':'lightgray',
+        'linewidth':2,
+        'mirror':True,
+        'ticks':'outside',
+        'type':'category',
+        'categoryorder':'total ascending'
+    },
+    'paper_bgcolor':'#F5F6F9',
+    'plot_bgcolor':'#F5F6F9',
+    'font_color':'#505050',
+    'font_size':10,
+    'autosize':True,
+    'margin':{'autoexpand':True,'t':20},
+    'annotations':[{
+        'x':-0.2,
+        'y':-0.16,
+        'xref':'paper',
+        'yref':'paper',
+        'text':'Source: <a href="https://ourworldindata.org/mental-health-disorders-as-risk-for-substance-use">\
             Our World in Data </a>',
-        showarrow = False)]
+        'showarrow' : False}]
 
-)
+}
+	
 
-
-# In[14]:
-
+fig_mh = go.Figure(data=trace_mh,layout=layout_mh)
 
 #. http://ghdx.healthdata.org/gbd-results-tool?params=gbd-api-2017-permalink/3c5c2b8846e4b1ecae4a9eb461e9a193
 
@@ -283,59 +194,51 @@ disorder_age_sex.replace('Global','World',inplace=True)
 disorder_age_sex = disorder_age_sex.replace('5-14 years','05-14').replace('70+ years','70+').sort_values(by='age')
 
 
-# In[15]:
+layout_prev={
+    'xaxis' : {
+        'showgrid':True,
+        'showline':True,
+        'showticklabels':True,
+        'domain':[0, 1],
+        'gridcolor':'lightgray',
+        'gridwidth':0.1,
+        'linecolor':'lightgray',
+        'linewidth':2,
+        'mirror':True,
+        'hoverformat':'.3%',
+        'tickformat':'.1%'
+    },
+    'yaxis' : {
+        'showline':True,
+        'showgrid':False,
+        'showticklabels':True,
+        'linecolor':'lightgray',
+        'linewidth':2,
+        'mirror':True,
+        'ticks':'outside',
+        'autorange':'reversed'
 
-
-layout_prev=dict(
-    xaxis = dict(
-        showgrid=True,
-        showline=True,
-        showticklabels=True,
-        domain=[0, 1],
-        gridcolor='lightgray',
-        gridwidth=0.1,
-        linecolor='lightgray',
-        linewidth=2,
-        mirror=True,
-        hoverformat='.3%',
-        tickformat='.1%'
-    ),
-    yaxis = dict(
-        showline=True,
-        showgrid=False,
-        showticklabels=True,
-        linecolor='lightgray',
-        linewidth=2,
-        mirror=True,
-        ticks='outside',
-        autorange='reversed'
-
-    ),
-    paper_bgcolor = '#F5F6F9',
-    plot_bgcolor = '#F5F6F9',
-    font_color = '#505050',
-    font_size = 10,
-    autosize = True,
-    margin = {'autoexpand': True, 't': 20},
-    barmode = 'group',
-    annotations = [dict(
-        x=0,
-        y=-0.18,
-        xref='paper',
-        yref='paper',
-        text='Source: <a href="http://ghdx.healthdata.org/gbd-results-tool">\
+    },
+    'paper_bgcolor' : '#F5F6F9',
+    'plot_bgcolor' : '#F5F6F9',
+    'font_color' : '#505050',
+    'font_size' : 10,
+    'autosize' : True,
+    'margin':{'autoexpand': True, 't': 20},
+    'barmode':'group',
+    'annotations':[{
+        'x':0,
+        'y':-0.18,
+        'xref':'paper',
+        'yref':'paper',
+        'text':'Source: <a href="http://ghdx.healthdata.org/gbd-results-tool">\
             IHME, Global Burden of Disease </a>',
-        showarrow=False)]
-)
+        'showarrow':False}]
+}
 
-
-# In[16]:
 
 
 regions_dict = [{'label':i,'value':i} for i in disorder_age_sex.location.unique()]
-
-
-# In[17]:
 
 
 # Navbar
@@ -588,7 +491,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 
 #app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__,external_stylesheets=[dbc.themes.BOOTSTRAP,external_stylesheets])
 server = app.server  # for Heroku deployment
 
 app.layout = html.Div(children=[NAVBAR,BODY])
@@ -668,7 +571,7 @@ def update_prevalence_figure(selected_region, selected_year):
                    marker=dict(color='rgb(8,64,129)',
                    line=dict(color='DarkBlue')))]
 
-    title = "Share of population within each age category suffering from                drug use disorders in {}, {}".format(selected_year, selected_region)
+    title = "Share of population within each age category suffering from drug use disorders in {}, {}".format(selected_year, selected_region)
 
     return {'data': trace, 'layout': layout_prev}, title
 
