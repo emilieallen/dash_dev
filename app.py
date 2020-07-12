@@ -416,6 +416,7 @@ LEFT_COLUMN = dbc.Jumbotron(
         dcc.Dropdown(
             id="prevalence-region",
             options=regions_dict,
+            clearable=False,
             value='World',
         )
     ], style={'padding':'20px 10px'}
