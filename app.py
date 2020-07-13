@@ -423,6 +423,7 @@ LEFT_COLUMN = dbc.Jumbotron(
             options=regions_dict,
             clearable=False,
             value='World',
+            style={'fontSize':'14px'}
         )
     ], style={'padding':'20px 10px'}
 )
