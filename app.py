@@ -101,7 +101,7 @@ big_df=pd.read_csv('data/global_df.csv')
 visible = {1990:{'label':'1990','style':{'font-size':'medium','color':'DimGrey','font-weight':'bold'}},2017:{'label':'2017','style':{'font-size':'medium','color':'DimGrey','font-weight':'bold'}}}
 visible2 = {1990:{'label':'1990','style':{'color':'DimGrey'}},2017:{'label':'2017','style':{'color':'DimGrey'}}}
                                                                                                                                     
-invisible ={i:'' for str(i) in big_df['year'].unique()[1:-1]}
+invisible ={str(i):'' for i in big_df['year'].unique()[1:-1]}
 
 visible.update(invisible)
 visible2.update(invisible)                                        
