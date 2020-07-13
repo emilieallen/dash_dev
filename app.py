@@ -96,10 +96,15 @@ big_df=pd.read_csv('data/global_df.csv')
 
 ## slider marks design
 
-visible={1990:'1990',2017:'2017'}
-invisible={str(i):'' for i in big_df['year'].unique()[1:-1]}
+# slider marks design
+
+visible = {1990:{'label':'1990','style':{'font-size':'medium','color':'DimGrey','font-weight':'bold'}},2017:{'label':'2017','style':{'font-size':'medium','color':'DimGrey','font-weight':'bold'}}}
+visible2 = {1990:{'label':'1990','style':{'color':'DimGrey'}},2017:{'label':'2017','style':{'color':'DimGrey'}}}
+                                                                                                                                    
+invisible ={i:'' for i in big_df['year'].unique()[1:-1]}
 
 visible.update(invisible)
+visible2.update(invisible)                                        
 
 layout={
     'title':'<b>Death rates from drug use disorders in 1990</b> <br><sub>measured per 100,000 individuals</sub>',
@@ -409,7 +414,7 @@ LEFT_COLUMN = dbc.Jumbotron(
             min=big_df['year'].unique()[0],
             max=big_df['year'].unique()[-1],
             value=big_df['year'].unique()[0],
-            marks=visible,
+            marks=visible2,
             included=False
             ),
         html.Label("Select a region", style={"marginTop": 10,'fontSize':'small'}),
@@ -601,7 +606,7 @@ def update_drug_use(selected_age):
     x = drug_use.iloc[selected_age,0]
     title = "Share of {} year old who admitted using the following drugs in the past year ".format(int(i))
 
-    subtitle = "% of {:,} surveyee in the US, 2012".format(x)
+    subtitle = "% of {:,} surveyee in the US, 2012 (log scale)".format(x)
 
     return {'data':trace_bar,'layout':layout_us_bar}, title, subtitle
 
