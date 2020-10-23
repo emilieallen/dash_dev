@@ -386,7 +386,7 @@ MENTAL_HEALTH_PLOT = [
     dbc.CardBody(
         [
             html.P(
-                "The ADHD value of 5.2 indicate that individuals with ADHD are 5.2 times as likely to\
+                "The ADHD value of 5.2 indicates that individuals with ADHD are 5.2 times as likely to\
                  develop drug dependency relative to those without.",
                 style={"fontSize": 13},
                 className="mb-0",
